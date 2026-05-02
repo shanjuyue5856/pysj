@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>古代壁画矿物颜料知识图谱问答系统</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            width: 900px;
+            margin: 30px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1f4e79;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 14px;
+            font-size: 16px;
+            border: 1px solid #dcdfe6;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #409eff;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: #409eff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #2f89e7;
+        }
+
+        .examples {
+            margin-bottom: 20px;
+        }
+
+        .examples span {
+            display: inline-block;
+            background: #eef3f8;
+            color: #1f4e79;
+            padding: 8px 12px;
+            margin: 5px 8px 5px 0;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .examples span:hover {
+            background: #d9ecff;
+        }
+
+        .card {
+            background: #fafafa;
+            border: 1px solid #ebeef5;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #1f4e79;
+        }
+
+        .answer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            line-height: 1.8;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background: #f4f4f4;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #888;
+            font-size: 13px;
+        }
+
+        .loading {
+            color: #e67e22;
+            font-weight: bold;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>基于知识图谱的古代壁画矿物颜料分析问答系统</h1>
+    <div class="subtitle">毕业设计演示界面</div>
+
+    <div class="input-area">
+        <input type="text" id="question" placeholder="请输入问题，例如：石绿通过哪些方法识别">
+        <button onclick="askQuestion()">提问</button>
+    </div>
+
+    <div class="examples">
+        <strong>示例问题：</strong><br>
+        <span onclick="fillQuestion('石绿通过哪些方法识别')">石绿通过哪些方法识别</span>
+        <span onclick="fillQuestion('莫高窟220窟壁画位于哪里')">莫高窟220窟壁画位于哪里</span>
+        <span onclick="fillQuestion('辰砂（α-HgS）有哪些元素')">辰砂（α-HgS）有哪些元素</span>
+        <span onclick="fillQuestion('Fe相关壁画有哪些')">Fe相关壁画有哪些</span>
+    </div>
+
+    <div class="card">
+        <h3>最终答案</h3>
+        <div id="answer" class="answer">等待提问...</div>
+    </div>
+
+    <div class="card">
+        <h3>中间过程</h3>
+        <p><strong>识别实体：</strong> <span id="entity">-</span></p>
+        <p><strong>实体类型：</strong> <span id="entity_type">-</span></p>
+        <p><strong>问题类型：</strong> <span id="question_type">-</span></p>
+    </div>
+
+    <div class="card">
+        <h3>Cypher 查询</h3>
+        <pre id="cypher">-</pre>
+    </div>
+
+    <div class="card">
+        <h3>查询结果</h3>
+        <pre id="results">-</pre>
+    </div>
+
+    <div class="card">
+        <h3>原始返回 JSON</h3>
+        <pre id="raw_json">-</pre>
+    </div>
+
+    <div class="footer">
+        技术栈：Flask + Neo4j + Knowledge Graph QA
+    </div>
+</div>
+
+<script>
+    function fillQuestion(text) {
+        document.getElementById("question").value = text;
+    }
+
+    async function askQuestion() {
+        const question = document.getElementById("question").value.trim();
+
+        if (!question) {
+            alert("请输入问题");
+            return;
+        }
+
+        document.getElementById("answer").innerHTML = '<span class="loading">查询中...</span>';
+        document.getElementById("entity").textContent = "-";
+        document.getElementById("entity_type").textContent = "-";
+        document.getElementById("question_type").textContent = "-";
+        document.getElementById("cypher").textContent = "-";
+        document.getElementById("results").textContent = "-";
+        document.getElementById("raw_json").textContent = "-";
+
+        try {
+            const response = await fetch("/api/qa", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ question: question })
+            });
+
+            const data = await response.json();
+            const result = data.data || {};
+
+            document.getElementById("answer").textContent = result.answer || "无答案";
+            document.getElementById("entity").textContent = result.entity?.entity || "-";
+            document.getElementById("entity_type").textContent = result.entity?.type || "-";
+            document.getElementById("question_type").textContent = result.question_type || "-";
+            document.getElementById("cypher").textContent = result.cypher || "-";
+
+            const results = result.results || [];
+            if (results.length > 0) {
+                document.getElementById("results").textContent =
+                    results.map((item, index) => `${index + 1}. ${item.answer || JSON.stringify(item)}`).join("\n");
+            } else {
+                document.getElementById("results").textContent = "[]";
+            }
+
+            document.getElementById("raw_json").textContent = JSON.stringify(data, null, 2);
+
+        } catch (error) {
+            document.getElementById("answer").innerHTML = '<span class="error">请求失败，请检查后端服务</span>';
+            document.getElementById("raw_json").textContent = error.toString();
+        }
+    }
+
+    document.getElementById("question").addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            askQuestion();
+        }
+    });
+</script>
+</body>
+</html>

@@ -65,4 +65,6 @@ def qa():
     data = request.get_json(silent=True) or {}
     question = data.get("question", "")
     result = qa_service.answer_question(question)
+    print("问题：", question)
+    print("返回：", result)
     return jsonify(result)
