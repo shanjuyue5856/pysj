@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="96888ffb-ff6a-4407-8700-3701188bfd0b" name="更改" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/py.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/evidence_enriched.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/literature_extraction.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/pigment_entity.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/build_mineral_elements.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/create_csv.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/data/import_pigment_entity.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/import_literature.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/import_pigment_entity.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/import_to_neo4j.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/inspect_neo4j.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/neo4j_qa.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/api/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/api/routes.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/db/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/db/neo4j_client.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/qa/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/qa/answer_generator.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/qa/cypher_builder.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/qa/entity_matcher.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/qa/qa_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/qa/question_classifier.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/qa/schema_loader.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test_api.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test_neo4j.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3ChNKjZeSDYgjbUEAyaLwuII3d9" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.create_csv.executor": "Run",
+    "Python.import_literature.executor": "Run",
+    "Python.import_to_neo4j.executor": "Run",
+    "Python.neo4j_qa.executor": "Run",
+    "Python.test_neo4j.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "database.data.extractors.current.export.id": "Comma-separated (CSV)_id",
+    "git-widget-placeholder": "master",
+    "junie.onboarding.icon.badge.shown": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-b63d5a1f7c97-b61e75351b1f-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-261.22158.340" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="96888ffb-ff6a-4407-8700-3701188bfd0b" name="更改" comment="" />
+      <created>1776833781898</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1776833781898</updated>
+      <workItem from="1776833782909" duration="12185000" />
+      <workItem from="1776926082978" duration="5767000" />
+      <workItem from="1777004507460" duration="4036000" />
+      <workItem from="1777022729344" duration="117000" />
+      <workItem from="1777291596191" duration="7389000" />
+      <workItem from="1777348851103" duration="5419000" />
+      <workItem from="1777715516286" duration="10180000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/py$test_neo4j.coverage" NAME="test_neo4j 覆盖结果" MODIFIED="1777736297902" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/py$create_csv.coverage" NAME="create_csv 覆盖结果" MODIFIED="1776843117866" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scripts" />
+    <SUITE FILE_PATH="coverage/py$neo4j_qa.coverage" NAME="neo4j_qa 覆盖结果" MODIFIED="1777721276198" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scripts" />
+    <SUITE FILE_PATH="coverage/py$import_to_neo4j.coverage" NAME="import_to_neo4j 覆盖结果" MODIFIED="1776842784681" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scripts" />
+    <SUITE FILE_PATH="coverage/py$import_literature.coverage" NAME="import_literature 覆盖结果" MODIFIED="1776927094875" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scripts" />
+  </component>
+</project>
