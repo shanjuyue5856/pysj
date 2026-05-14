@@ -2,247 +2,764 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>古代壁画矿物颜料知识图谱问答系统</title>
+    <title>基于知识图谱的古代壁画矿物颜料分析问答系统</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: "Microsoft YaHei", Arial, sans-serif;
-            background: #f5f7fa;
             margin: 0;
-            padding: 0;
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: #f3f5f8;
             color: #333;
         }
 
-        .container {
-            width: 900px;
-            margin: 30px auto;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 18px rgba(0,0,0,0.08);
-            padding: 30px;
+        .page {
+            width: 100%;
+            min-height: 100vh;
+            padding: 24px;
         }
 
-        h1 {
-            text-align: center;
-            color: #1f4e79;
-            margin-bottom: 10px;
+        .header {
+            background: linear-gradient(135deg, #2f5597, #1f3763);
+            color: white;
+            padding: 24px 32px;
+            border-radius: 14px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
         }
 
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            margin: 10px 0 0;
+            color: #dbe6ff;
+            font-size: 15px;
+        }
+
+        .main {
+            display: grid;
+            grid-template-columns: 42% 58%;
+            gap: 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-title {
+            margin: 0 0 16px;
+            font-size: 20px;
+            color: #1f3763;
+            border-left: 5px solid #2f5597;
+            padding-left: 10px;
         }
 
         .input-area {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 16px;
         }
 
-        input[type="text"] {
+        #questionInput {
             flex: 1;
             padding: 12px 14px;
-            font-size: 16px;
-            border: 1px solid #dcdfe6;
+            border: 1px solid #cfd6e4;
             border-radius: 8px;
+            font-size: 15px;
             outline: none;
         }
 
-        input[type="text"]:focus {
-            border-color: #409eff;
+        #questionInput:focus {
+            border-color: #2f5597;
+            box-shadow: 0 0 0 3px rgba(47, 85, 151, 0.12);
         }
 
         button {
-            padding: 12px 20px;
-            background: #409eff;
-            color: white;
             border: none;
+            background: #2f5597;
+            color: white;
+            padding: 0 22px;
             border-radius: 8px;
-            cursor: pointer;
             font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
         }
 
         button:hover {
-            background: #2f89e7;
+            background: #1f3763;
         }
 
-        .examples {
-            margin-bottom: 20px;
+        button:disabled {
+            background: #9aa7bd;
+            cursor: not-allowed;
         }
 
-        .examples span {
+        .example-list {
+            margin-bottom: 18px;
+        }
+
+        .example-list span {
             display: inline-block;
-            background: #eef3f8;
-            color: #1f4e79;
-            padding: 8px 12px;
-            margin: 5px 8px 5px 0;
-            border-radius: 20px;
+            background: #eef3ff;
+            color: #2f5597;
+            padding: 6px 10px;
+            border-radius: 16px;
+            margin: 4px;
+            font-size: 13px;
             cursor: pointer;
+        }
+
+        .example-list span:hover {
+            background: #dce8ff;
+        }
+
+        .section {
+            margin-top: 18px;
+        }
+
+        .section h3 {
+            font-size: 16px;
+            margin: 0 0 8px;
+            color: #2f5597;
+        }
+
+        .answer-box {
+            min-height: 80px;
+            background: #f8fafc;
+            border: 1px solid #e1e6ef;
+            border-radius: 8px;
+            padding: 14px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .info-item {
+            background: #f8fafc;
+            border: 1px solid #e1e6ef;
+            border-radius: 8px;
+            padding: 10px 12px;
             font-size: 14px;
         }
 
-        .examples span:hover {
-            background: #d9ecff;
-        }
-
-        .card {
-            background: #fafafa;
-            border: 1px solid #ebeef5;
-            border-radius: 10px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-
-        .card h3 {
-            margin-top: 0;
-            color: #1f4e79;
-        }
-
-        .answer {
-            font-size: 18px;
-            font-weight: bold;
-            color: #2c3e50;
-            line-height: 1.8;
+        .info-label {
+            color: #666;
+            margin-right: 6px;
         }
 
         pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            background: #f4f4f4;
-            padding: 12px;
-            border-radius: 6px;
+            margin: 0;
+            background: #1e1e1e;
+            color: #dcdcdc;
+            border-radius: 8px;
+            padding: 14px;
             overflow-x: auto;
+            line-height: 1.5;
+            font-size: 13px;
+            max-height: 220px;
         }
 
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #888;
+        .result-box {
+            background: #f8fafc;
+            border: 1px solid #e1e6ef;
+            border-radius: 8px;
+            padding: 14px;
+            max-height: 260px;
+            overflow: auto;
             font-size: 13px;
+            white-space: pre-wrap;
+        }
+
+        #kgGraph {
+            width: 100%;
+            height: 720px;
+            border: 1px solid #e1e6ef;
+            border-radius: 10px;
+            background: #ffffff;
+        }
+
+        .graph-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        .graph-toolbar-left {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .graph-toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        select {
+            padding: 7px 10px;
+            border: 1px solid #cfd6e4;
+            border-radius: 6px;
         }
 
         .loading {
-            color: #e67e22;
-            font-weight: bold;
+            color: #2f5597;
         }
 
         .error {
-            color: red;
-            font-weight: bold;
+            color: #c0392b;
+        }
+
+        @media screen and (max-width: 1100px) {
+            .main {
+                grid-template-columns: 1fr;
+            }
+
+            #kgGraph {
+                height: 560px;
+            }
         }
     </style>
 </head>
+
 <body>
-<div class="container">
-    <h1>基于知识图谱的古代壁画矿物颜料分析问答系统</h1>
-    <div class="subtitle">毕业设计演示界面</div>
+<div class="page">
 
-    <div class="input-area">
-        <input type="text" id="question" placeholder="请输入问题，例如：石绿通过哪些方法识别">
-        <button onclick="askQuestion()">提问</button>
+    <div class="header">
+        <h1>基于知识图谱的古代壁画矿物颜料分析问答系统</h1>
+        <p>支持自然语言问题输入、实体识别、问题分类、Cypher 查询、答案生成与知识图谱可视化展示</p>
     </div>
 
-    <div class="examples">
-        <strong>示例问题：</strong><br>
-        <span onclick="fillQuestion('石绿通过哪些方法识别')">石绿通过哪些方法识别</span>
-        <span onclick="fillQuestion('莫高窟220窟壁画位于哪里')">莫高窟220窟壁画位于哪里</span>
-        <span onclick="fillQuestion('辰砂（α-HgS）有哪些元素')">辰砂（α-HgS）有哪些元素</span>
-        <span onclick="fillQuestion('Fe相关壁画有哪些')">Fe相关壁画有哪些</span>
-    </div>
+    <div class="main">
 
-    <div class="card">
-        <h3>最终答案</h3>
-        <div id="answer" class="answer">等待提问...</div>
-    </div>
+        <div class="card">
+            <h2 class="card-title">智能问答</h2>
 
-    <div class="card">
-        <h3>中间过程</h3>
-        <p><strong>识别实体：</strong> <span id="entity">-</span></p>
-        <p><strong>实体类型：</strong> <span id="entity_type">-</span></p>
-        <p><strong>问题类型：</strong> <span id="question_type">-</span></p>
-    </div>
+            <div class="input-area">
+                <input id="questionInput" type="text" placeholder="请输入问题，例如：辰砂是什么颜色？">
+                <button id="askBtn" onclick="askQuestion()">查询</button>
+            </div>
 
-    <div class="card">
-        <h3>Cypher 查询</h3>
-        <pre id="cypher">-</pre>
-    </div>
+            <div class="example-list">
+                <span onclick="fillQuestion('辰砂是什么颜色')">辰砂是什么颜色</span>
+                <span onclick="fillQuestion('石绿来源于什么矿物')">石绿来源于什么矿物</span>
+                <span onclick="fillQuestion('青金石包含哪些元素')">青金石包含哪些元素</span>
+                <span onclick="fillQuestion('敦煌常见哪些颜料')">敦煌常见哪些颜料</span>
+                <span onclick="fillQuestion('辰砂有哪些文献支持')">辰砂有哪些文献支持</span>
+            </div>
 
-    <div class="card">
-        <h3>查询结果</h3>
-        <pre id="results">-</pre>
-    </div>
+            <div class="section">
+                <h3>回答结果</h3>
+                <div id="answerBox" class="answer-box">请输入问题后点击查询。</div>
+            </div>
 
-    <div class="card">
-        <h3>原始返回 JSON</h3>
-        <pre id="raw_json">-</pre>
-    </div>
+            <div class="section">
+                <h3>识别信息</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">识别实体：</span>
+                        <span id="entityBox">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">实体类型：</span>
+                        <span id="entityTypeBox">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">问题类型：</span>
+                        <span id="questionTypeBox">-</span>
+                    </div>
+                </div>
+            </div>
 
-    <div class="footer">
-        技术栈：Flask + Neo4j + Knowledge Graph QA
+            <div class="section">
+                <h3>Cypher 查询语句</h3>
+                <pre id="cypherBox">-</pre>
+            </div>
+
+            <div class="section">
+                <h3>查询结果</h3>
+                <div id="resultBox" class="result-box">-</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">相关知识图谱可视化</h2>
+
+            <div class="graph-toolbar">
+                <div class="graph-toolbar-left" id="graphStatus">
+                    图谱将在查询答案后自动加载。
+                </div>
+
+                <div class="graph-toolbar-right">
+                    <label for="depthSelect">邻域深度：</label>
+                    <select id="depthSelect" onchange="reloadCurrentGraph()">
+                        <option value="1">1 跳</option>
+                        <option value="2" selected>2 跳</option>
+                        <option value="3">3 跳</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="kgGraph"></div>
+        </div>
+
     </div>
 </div>
 
 <script>
-    function fillQuestion(text) {
-        document.getElementById("question").value = text;
+    let kgChart = null;
+    let currentEntityName = "";
+
+    document.getElementById("questionInput").addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            askQuestion();
+        }
+    });
+
+    function fillQuestion(question) {
+        document.getElementById("questionInput").value = question;
+        askQuestion();
     }
 
-    async function askQuestion() {
-        const question = document.getElementById("question").value.trim();
+    function askQuestion() {
+        const questionInput = document.getElementById("questionInput");
+        const askBtn = document.getElementById("askBtn");
+
+        const question = questionInput.value.trim();
 
         if (!question) {
             alert("请输入问题");
             return;
         }
 
-        document.getElementById("answer").innerHTML = '<span class="loading">查询中...</span>';
-        document.getElementById("entity").textContent = "-";
-        document.getElementById("entity_type").textContent = "-";
-        document.getElementById("question_type").textContent = "-";
-        document.getElementById("cypher").textContent = "-";
-        document.getElementById("results").textContent = "-";
-        document.getElementById("raw_json").textContent = "-";
+        askBtn.disabled = true;
+        askBtn.innerText = "查询中...";
 
-        try {
-            const response = await fetch("/api/qa", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ question: question })
+        document.getElementById("answerBox").innerHTML = '<span class="loading">正在查询，请稍候...</span>';
+        document.getElementById("entityBox").innerText = "-";
+        document.getElementById("entityTypeBox").innerText = "-";
+        document.getElementById("questionTypeBox").innerText = "-";
+        document.getElementById("cypherBox").innerText = "-";
+        document.getElementById("resultBox").innerText = "-";
+        document.getElementById("graphStatus").innerText = "等待问答结果返回后加载图谱...";
+
+        fetch("/api/qa", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                question: question
+            })
+        })
+            .then(response => response.text())
+            .then(text => {
+                let data;
+
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    console.error("问答接口返回的不是合法 JSON：", text);
+                    throw new Error("问答接口返回数据不是合法 JSON。");
+                }
+
+                console.log("问答接口返回：", data);
+
+                const qaData = data.data || {};
+
+                const answer = qaData.answer || data.msg || "未生成答案。";
+                const entityInfo = qaData.entity || {};
+                const questionType = qaData.question_type || "-";
+                const cypher = qaData.cypher || "-";
+                const results = qaData.results || [];
+
+                const entityName = getEntityName(entityInfo);
+                const entityType = getEntityType(entityInfo);
+
+                currentEntityName = entityName || "";
+
+                if (data.code !== 200) {
+                    document.getElementById("answerBox").innerHTML =
+                        '<span class="error">' + escapeHtml(answer) + '</span>';
+                } else {
+                    document.getElementById("answerBox").innerText = answer;
+                }
+
+                document.getElementById("entityBox").innerText = entityName || "-";
+                document.getElementById("entityTypeBox").innerText = entityType || "-";
+                document.getElementById("questionTypeBox").innerText = questionType || "-";
+                document.getElementById("cypherBox").innerText = cypher;
+                document.getElementById("resultBox").innerText = JSON.stringify(results, null, 2);
+
+                // 关键优化：
+                // 即使问题类型没识别到，只要实体识别到了，也加载相关图谱。
+                if (entityName) {
+                    loadKnowledgeGraph(entityName);
+                } else {
+                    clearGraph();
+                    document.getElementById("graphStatus").innerText = "未识别到实体，无法加载相关知识图谱。";
+                }
+            })
+            .catch(error => {
+                console.error("问答请求失败：", error);
+                document.getElementById("answerBox").innerHTML =
+                    '<span class="error">请求失败：' + escapeHtml(error.message) + '</span>';
+                clearGraph();
+                document.getElementById("graphStatus").innerHTML =
+                    '<span class="error">问答请求失败，无法加载图谱。</span>';
+            })
+            .finally(() => {
+                askBtn.disabled = false;
+                askBtn.innerText = "查询";
             });
+    }
 
-            const data = await response.json();
-            const result = data.data || {};
+    function getEntityName(entityInfo) {
+        if (!entityInfo) {
+            return "";
+        }
 
-            document.getElementById("answer").textContent = result.answer || "无答案";
-            document.getElementById("entity").textContent = result.entity?.entity || "-";
-            document.getElementById("entity_type").textContent = result.entity?.type || "-";
-            document.getElementById("question_type").textContent = result.question_type || "-";
-            document.getElementById("cypher").textContent = result.cypher || "-";
+        if (typeof entityInfo === "string") {
+            return entityInfo;
+        }
 
-            const results = result.results || [];
-            if (results.length > 0) {
-                document.getElementById("results").textContent =
-                    results.map((item, index) => `${index + 1}. ${item.answer || JSON.stringify(item)}`).join("\n");
-            } else {
-                document.getElementById("results").textContent = "[]";
+        if (Array.isArray(entityInfo)) {
+            if (entityInfo.length === 0) {
+                return "";
             }
+            return getEntityName(entityInfo[0]);
+        }
 
-            document.getElementById("raw_json").textContent = JSON.stringify(data, null, 2);
+        return entityInfo.entity ||
+            entityInfo.name ||
+            entityInfo.text ||
+            entityInfo.value ||
+            entityInfo.title ||
+            "";
+    }
 
-        } catch (error) {
-            document.getElementById("answer").innerHTML = '<span class="error">请求失败，请检查后端服务</span>';
-            document.getElementById("raw_json").textContent = error.toString();
+    function getEntityType(entityInfo) {
+        if (!entityInfo || typeof entityInfo === "string") {
+            return "";
+        }
+
+        if (Array.isArray(entityInfo)) {
+            if (entityInfo.length === 0) {
+                return "";
+            }
+            return getEntityType(entityInfo[0]);
+        }
+
+        return entityInfo.type ||
+            entityInfo.entity_type ||
+            entityInfo.label ||
+            entityInfo.category ||
+            "";
+    }
+
+    function reloadCurrentGraph() {
+        if (currentEntityName) {
+            loadKnowledgeGraph(currentEntityName);
         }
     }
 
-    document.getElementById("question").addEventListener("keydown", function(event) {
-        if (event.key === "Enter") {
-            askQuestion();
+    function loadKnowledgeGraph(entityName) {
+        const depth = document.getElementById("depthSelect").value || 2;
+
+        document.getElementById("graphStatus").innerText =
+            "正在加载 “" + entityName + "” 的 " + depth + " 跳邻域图谱...";
+
+        fetch(`/api/graph?entity=${encodeURIComponent(entityName)}&depth=${encodeURIComponent(depth)}`)
+            .then(response => response.text())
+            .then(text => {
+                let data;
+
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    console.error("图谱接口返回的不是合法 JSON：", text);
+                    throw new Error("图谱接口返回数据不是合法 JSON，请检查后端是否仍包含 NaN。");
+                }
+
+                console.log("图谱接口返回：", data);
+
+                if (data.code !== 200) {
+                    document.getElementById("graphStatus").innerText =
+                        data.msg || "未查询到相关图谱数据。";
+                    clearGraph();
+                    return;
+                }
+
+                const graphData = data.data || {
+                    nodes: [],
+                    links: []
+                };
+
+                const nodeCount = graphData.nodes ? graphData.nodes.length : 0;
+                const linkCount = graphData.links ? graphData.links.length : 0;
+
+                document.getElementById("graphStatus").innerText =
+                    `当前实体：${entityName}；节点数：${nodeCount}；关系数：${linkCount}`;
+
+                renderKnowledgeGraph(graphData);
+            })
+            .catch(error => {
+                console.error("加载知识图谱失败：", error);
+                document.getElementById("graphStatus").innerHTML =
+                    '<span class="error">图谱加载失败：' + escapeHtml(error.message) + '</span>';
+                clearGraph();
+            });
+    }
+
+    function renderKnowledgeGraph(graphData) {
+        const chartDom = document.getElementById("kgGraph");
+
+        if (!kgChart) {
+            kgChart = echarts.init(chartDom);
+        }
+
+        const nodes = graphData.nodes || [];
+        const links = graphData.links || [];
+
+        if (nodes.length === 0) {
+            clearGraph();
+            return;
+        }
+
+        const categoriesMap = {};
+
+        nodes.forEach(node => {
+            const category = node.category || "Unknown";
+            categoriesMap[category] = true;
+        });
+
+        const categories = Object.keys(categoriesMap).map(name => {
+            return {
+                name: name
+            };
+        });
+
+        const option = {
+            backgroundColor: "#ffffff",
+
+            tooltip: {
+                trigger: "item",
+                formatter: function (params) {
+                    if (params.dataType === "node") {
+                        const data = params.data || {};
+                        let html = `<b>${escapeHtml(data.name || "")}</b><br/>`;
+                        html += `类型：${escapeHtml(data.category || "Unknown")}<br/>`;
+
+                        if (data.rawProperties) {
+                            html += "<hr style='border:none;border-top:1px solid #ddd;margin:6px 0;'>";
+                            Object.keys(data.rawProperties).forEach(key => {
+                                const value = data.rawProperties[key];
+
+                                if (value === null || value === undefined || value === "") {
+                                    return;
+                                }
+
+                                html += `${escapeHtml(key)}：${escapeHtml(String(value))}<br/>`;
+                            });
+                        }
+
+                        return html;
+                    }
+
+                    if (params.dataType === "edge") {
+                        const data = params.data || {};
+                        return `关系：${escapeHtml(data.type || "")}`;
+                    }
+
+                    return "";
+                }
+            },
+
+            legend: [{
+                top: 0,
+                left: "center",
+                type: "scroll",
+                data: categories.map(item => item.name)
+            }],
+
+            series: [{
+                name: "知识图谱",
+                type: "graph",
+                layout: "force",
+
+                data: nodes.map(node => {
+                    return {
+                        id: String(node.id),
+                        name: node.name || String(node.id),
+                        category: node.category || "Unknown",
+                        value: node.name || "",
+                        rawProperties: node.properties || {},
+                        symbolSize: getNodeSize(node.category),
+                        label: {
+                            show: true,
+                            fontSize: 12,
+                            color: "#333"
+                        },
+                        itemStyle: {
+                            borderColor: "#fff",
+                            borderWidth: 1
+                        }
+                    };
+                }),
+
+                links: links.map(link => {
+                    return {
+                        source: String(link.source),
+                        target: String(link.target),
+                        type: link.type || "",
+                        rawProperties: link.properties || {},
+                        label: {
+                            show: true,
+                            formatter: link.type || "",
+                            fontSize: 10
+                        }
+                    };
+                }),
+
+                categories: categories,
+
+                roam: true,
+                draggable: true,
+                focusNodeAdjacency: true,
+
+                force: {
+                    repulsion: 700,
+                    gravity: 0.08,
+                    edgeLength: [100, 180],
+                    layoutAnimation: true
+                },
+
+                lineStyle: {
+                    color: "source",
+                    width: 1.6,
+                    curveness: 0.18,
+                    opacity: 0.9
+                },
+
+                edgeSymbol: ["none", "arrow"],
+                edgeSymbolSize: [0, 8],
+
+                emphasis: {
+                    focus: "adjacency",
+                    lineStyle: {
+                        width: 4
+                    },
+                    label: {
+                        show: true
+                    }
+                }
+            }]
+        };
+
+        kgChart.setOption(option, true);
+
+        setTimeout(() => {
+            kgChart.resize();
+        }, 100);
+    }
+
+    function getNodeSize(category) {
+        const c = category || "";
+
+        if (c === "Mural" || c === "壁画") {
+            return 64;
+        }
+
+        if (c === "Pigment" || c === "颜料") {
+            return 58;
+        }
+
+        if (c === "Mineral" || c === "矿物") {
+            return 54;
+        }
+
+        if (c === "Element" || c === "元素") {
+            return 46;
+        }
+
+        if (c === "Site" || c === "遗址") {
+            return 56;
+        }
+
+        if (c === "AnalysisMethod" || c === "Method" || c === "分析方法") {
+            return 48;
+        }
+
+        if (c === "Literature" || c === "Reference" || c === "文献") {
+            return 48;
+        }
+
+        return 42;
+    }
+
+    function clearGraph() {
+        const chartDom = document.getElementById("kgGraph");
+
+        if (!kgChart) {
+            kgChart = echarts.init(chartDom);
+        }
+
+        kgChart.clear();
+
+        kgChart.setOption({
+            backgroundColor: "#ffffff",
+            graphic: {
+                type: "text",
+                left: "center",
+                top: "middle",
+                style: {
+                    text: "暂无图谱数据",
+                    fontSize: 18,
+                    fill: "#999"
+                }
+            }
+        });
+    }
+
+    function escapeHtml(text) {
+        if (text === null || text === undefined) {
+            return "";
+        }
+
+        return String(text)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    window.addEventListener("resize", function () {
+        if (kgChart) {
+            kgChart.resize();
         }
     });
+
+    clearGraph();
 </script>
 </body>
 </html>
