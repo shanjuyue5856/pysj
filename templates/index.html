@@ -213,12 +213,14 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
         select {
             padding: 7px 10px;
             border: 1px solid #cfd6e4;
             border-radius: 6px;
+            background: #fff;
         }
 
         .loading {
@@ -227,6 +229,10 @@
 
         .error {
             color: #c0392b;
+        }
+
+        .warning {
+            color: #d35400;
         }
 
         @media screen and (max-width: 1100px) {
@@ -315,6 +321,16 @@
                         <option value="1">1 跳</option>
                         <option value="2" selected>2 跳</option>
                         <option value="3">3 跳</option>
+                    </select>
+
+                    <label for="maxNodeSelect">节点上限：</label>
+                    <select id="maxNodeSelect" onchange="reloadCurrentGraph()">
+                        <option value="30">30</option>
+                        <option value="50">50</option>
+                        <option value="60" selected>60</option>
+                        <option value="80">80</option>
+                        <option value="100">100</option>
+                        <option value="120">120</option>
                     </select>
                 </div>
             </div>
@@ -410,8 +426,7 @@
                 document.getElementById("cypherBox").innerText = cypher;
                 document.getElementById("resultBox").innerText = JSON.stringify(results, null, 2);
 
-                // 关键优化：
-                // 即使问题类型没识别到，只要实体识别到了，也加载相关图谱。
+                // 即使问题类型没识别到，只要实体识别到了，也加载相关图谱
                 if (entityName) {
                     loadKnowledgeGraph(entityName);
                 } else {
@@ -484,11 +499,14 @@
 
     function loadKnowledgeGraph(entityName) {
         const depth = document.getElementById("depthSelect").value || 2;
+        const maxNodes = document.getElementById("maxNodeSelect")
+            ? document.getElementById("maxNodeSelect").value || 60
+            : 60;
 
         document.getElementById("graphStatus").innerText =
-            "正在加载 “" + entityName + "” 的 " + depth + " 跳邻域图谱...";
+            "正在加载 “" + entityName + "” 的 " + depth + " 跳邻域图谱，节点上限 " + maxNodes + "...";
 
-        fetch(`/api/graph?entity=${encodeURIComponent(entityName)}&depth=${encodeURIComponent(depth)}`)
+        fetch(`/api/graph?entity=${encodeURIComponent(entityName)}&depth=${encodeURIComponent(depth)}&max_nodes=${encodeURIComponent(maxNodes)}`)
             .then(response => response.text())
             .then(text => {
                 let data;
@@ -509,16 +527,35 @@
                     return;
                 }
 
-                const graphData = data.data || {
+                let graphData = data.data || {
                     nodes: [],
                     links: []
                 };
 
+                // 前端二次保险，即使后端没限制，前端也再限制一次
+                graphData = limitGraphDataOnFrontend(graphData, Number(maxNodes));
+
                 const nodeCount = graphData.nodes ? graphData.nodes.length : 0;
                 const linkCount = graphData.links ? graphData.links.length : 0;
 
-                document.getElementById("graphStatus").innerText =
-                    `当前实体：${entityName}；节点数：${nodeCount}；关系数：${linkCount}`;
+                const totalNodes = graphData.total_nodes !== undefined
+                    ? graphData.total_nodes
+                    : nodeCount;
+
+                const totalLinks = graphData.total_links !== undefined
+                    ? graphData.total_links
+                    : linkCount;
+
+                const limited = graphData.limited || totalNodes > nodeCount;
+
+                if (limited) {
+                    document.getElementById("graphStatus").innerHTML =
+                        `当前实体：${escapeHtml(entityName)}；已显示节点：${nodeCount}/${totalNodes}；已显示关系：${linkCount}/${totalLinks}；` +
+                        `<span class="warning">为避免卡顿已限制显示数量</span>`;
+                } else {
+                    document.getElementById("graphStatus").innerText =
+                        `当前实体：${entityName}；节点数：${nodeCount}；关系数：${linkCount}`;
+                }
 
                 renderKnowledgeGraph(graphData);
             })
@@ -528,6 +565,36 @@
                     '<span class="error">图谱加载失败：' + escapeHtml(error.message) + '</span>';
                 clearGraph();
             });
+    }
+
+    function limitGraphDataOnFrontend(graphData, maxNodes) {
+        const nodes = graphData.nodes || [];
+        const links = graphData.links || [];
+
+        if (!maxNodes || maxNodes <= 0) {
+            maxNodes = 60;
+        }
+
+        if (nodes.length <= maxNodes) {
+            return graphData;
+        }
+
+        const keptNodes = nodes.slice(0, maxNodes);
+        const keptNodeIds = new Set(keptNodes.map(node => String(node.id)));
+
+        const keptLinks = links.filter(link => {
+            return keptNodeIds.has(String(link.source)) && keptNodeIds.has(String(link.target));
+        });
+
+        return {
+            ...graphData,
+            nodes: keptNodes,
+            links: keptLinks,
+            limited: true,
+            total_nodes: graphData.total_nodes || nodes.length,
+            total_links: graphData.total_links || links.length,
+            max_nodes: maxNodes
+        };
     }
 
     function renderKnowledgeGraph(graphData) {
@@ -633,7 +700,7 @@
                         type: link.type || "",
                         rawProperties: link.properties || {},
                         label: {
-                            show: true,
+                            show: false,
                             formatter: link.type || "",
                             fontSize: 10
                         }
@@ -647,17 +714,17 @@
                 focusNodeAdjacency: true,
 
                 force: {
-                    repulsion: 700,
+                    repulsion: 500,
                     gravity: 0.08,
-                    edgeLength: [100, 180],
-                    layoutAnimation: true
+                    edgeLength: [90, 160],
+                    layoutAnimation: false
                 },
 
                 lineStyle: {
                     color: "source",
-                    width: 1.6,
+                    width: 1.5,
                     curveness: 0.18,
-                    opacity: 0.9
+                    opacity: 0.85
                 },
 
                 edgeSymbol: ["none", "arrow"],
@@ -711,6 +778,18 @@
 
         if (c === "Literature" || c === "Reference" || c === "文献") {
             return 48;
+        }
+
+        if (c === "Dynasty" || c === "朝代") {
+            return 46;
+        }
+
+        if (c === "Color" || c === "颜色") {
+            return 44;
+        }
+
+        if (c === "Technique" || c === "工艺") {
+            return 46;
         }
 
         return 42;
