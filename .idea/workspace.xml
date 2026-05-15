@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="96888ffb-ff6a-4407-8700-3701188bfd0b" name="更改" comment="前端增加了知识图谱的可视化展示">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/routes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
